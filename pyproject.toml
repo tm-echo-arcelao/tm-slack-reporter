@@ -1,0 +1,23 @@
+[project]
+name = "tm_slack_reporter"
+version = "0.1.0"
+description = "tm-slack-reporter using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "crewai[tools]>=0.118.0,<1.0.0"
+]
+
+[project.scripts]
+tm_slack_reporter = "tm_slack_reporter.main:run"
+run_crew = "tm_slack_reporter.main:run"
+train = "tm_slack_reporter.main:train"
+replay = "tm_slack_reporter.main:replay"
+test = "tm_slack_reporter.main:test"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "crew"
