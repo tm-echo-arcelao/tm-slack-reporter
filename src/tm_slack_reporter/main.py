@@ -2,8 +2,6 @@
 import sys
 import warnings
 
-from datetime import datetime
-
 from tm_slack_reporter.crew import TmSlackReporter
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
@@ -20,7 +18,7 @@ def run():
     """
     inputs = {
         "slack_channel_name": "#tm-slack-reporter-test",
-        "time_period": "last 30 days",
+        "time_period": "all time",
         "slack_user_name": "echo",
     }
 
@@ -36,7 +34,7 @@ def train():
     """
     inputs = {
         "slack_channel_name": "#tm-slack-reporter-test",
-        "time_period": "last 30 days",
+        "time_period": "all time",
         "slack_user_name": "echo",
     }
     try:
@@ -65,7 +63,7 @@ def test():
     """
     inputs = {
         "slack_channel_name": "#tm-slack-reporter-test",
-        "time_period": "last 30 days",
+        "time_period": "all time",
         "slack_user_name": "echo",
     }
 

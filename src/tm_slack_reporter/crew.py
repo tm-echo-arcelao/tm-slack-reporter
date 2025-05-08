@@ -11,7 +11,11 @@ from src.tm_slack_reporter.utils.env import config
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
 
-llm = LLM(model=config.get("OLLAMA_MODEL_ID"))
+llm = LLM(
+    model=config.get("CREWAI_OPENROUTER_MODEL_ID"),
+    base_url=config.get("CREWAI_OPENROUTER_BASE_URL"),
+    api_key=config.get("CREWAI_OPENROUTER_API_KEY"),
+)
 
 
 @CrewBase
@@ -74,7 +78,8 @@ class TmSlackReporter:
             memory=True,
             embedder={
                 "provider": "ollama",
-                "config": {"model": config.get("OLLAMA_EMBEDDER_MODEL_ID")},
+                "config": {"model": config.get("CREWAI_OLLAMA_EMBEDDER_MODEL_ID")},
             },
+            max_rpm=5,
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )
