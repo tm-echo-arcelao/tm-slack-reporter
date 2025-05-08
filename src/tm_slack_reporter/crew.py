@@ -1,13 +1,17 @@
-from crewai import Agent, Crew, Process, Task
+from crewai import Agent, Crew, LLM, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
 
-from src.tm_slack_reporter.tools.slack_tool import slack_tools
+from src.tm_slack_reporter.tools.slack_tool import SlackToolSet
+from src.tm_slack_reporter.utils.env import config
 
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
+
+
+llm = LLM(model=config.get("OLLAMA_MODEL_ID"))
 
 
 @CrewBase
@@ -28,7 +32,8 @@ class TmSlackReporter:
         return Agent(
             config=self.agents_config["slack_summarizer"],  # type: ignore[index]
             verbose=True,
-            tools=slack_tools,
+            tools=SlackToolSet().get_tools(),
+            llm=llm,
         )
 
     @agent
@@ -36,6 +41,7 @@ class TmSlackReporter:
         return Agent(
             config=self.agents_config["action_reporter"],  # type: ignore[index]
             verbose=True,
+            llm=llm,
         )
 
     # To learn more about structured task outputs,
@@ -68,9 +74,7 @@ class TmSlackReporter:
             memory=True,
             embedder={
                 "provider": "ollama",
-                "config": {
-                    "model": "nomic-embed-text"
-                },
+                "config": {"model": config.get("OLLAMA_EMBEDDER_MODEL_ID")},
             },
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )

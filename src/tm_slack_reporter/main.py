@@ -18,7 +18,11 @@ def run():
     """
     Run the crew.
     """
-    inputs = {"topic": "AI LLMs", "current_year": str(datetime.now().year)}
+    inputs = {
+        "slack_channel_name": "#engineering-office-genai",
+        "time_period": "last 30 days",
+        "slack_user_name": "echo",
+    }
 
     try:
         TmSlackReporter().crew().kickoff(inputs=inputs)

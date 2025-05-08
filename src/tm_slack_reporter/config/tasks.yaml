@@ -1,19 +1,20 @@
 gather_context_task:
   description: >
-    Gather the list of messages in the Slack channel {slack_channel} during the time period {time_period}. 
+    Gather the list of messages in the Slack channel {slack_channel_name} during the time period {time_period}. 
     Make sure to include all the messages, not just the ones that are relevant to the report.
   expected_output: >
-    A bullet list of all actions taken by the user {slack_user} in the Slack 
-    channel {slack_channel} during the time period {time_period}. Each action should describe
+    A bullet list of all actions taken by the user {slack_user_name} in the Slack 
+    channel {slack_channel_name} during the time period {time_period}. Each action should describe
     the action taken by the user, the date and time it was taken, and the Slack channel it was taken in.
   agent: slack_summarizer
 
 report_task:
   description: >
-    Report on the performance of the user {slack_user} in the Slack channel {slack_channel}
+    Report on the performance of the user {slack_user_name} in the Slack channel {slack_channel_name}
     during the time period {time_period}.
   expected_output: >
-    A report on the performance of the user {slack_user} in the Slack channel {slack_channel}
+    A report on the performance of the user {slack_user_name} in the Slack channel {slack_channel_name}
     during the time period {time_period}. The report should detail the user's role, main responsibilities,
     and strengths, weaknesses, and areas for improvement. An individual report should be written for each
     Slack channel.
+  agent: slack_summarizer, action_reporter

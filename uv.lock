@@ -3435,6 +3435,7 @@ source = { editable = "." }
 dependencies = [
     { name = "composio-crewai" },
     { name = "crewai", extra = ["tools"] },
+    { name = "python-dotenv" },
 ]
 
 [package.dev-dependencies]
@@ -3446,6 +3447,7 @@ dev = [
 requires-dist = [
     { name = "composio-crewai", specifier = ">=0.7.15" },
     { name = "crewai", extras = ["tools"], specifier = ">=0.118.0,<1.0.0" },
+    { name = "python-dotenv", specifier = ">=1.1.0" },
 ]
 
 [package.metadata.requires-dev]
