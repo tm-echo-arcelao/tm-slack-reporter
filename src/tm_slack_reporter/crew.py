@@ -1,6 +1,7 @@
 from crewai import Agent, Crew, LLM, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
+from datetime import datetime
 from typing import List
 
 from src.tm_slack_reporter.tools.slack_tool import SlackToolSet
@@ -59,9 +60,11 @@ class TmSlackReporter:
 
     @task
     def report_task(self) -> Task:
+        report_filepath = f"reports/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}/report.md"
+
         return Task(
             config=self.tasks_config["report_task"],  # type: ignore[index]
-            output_file="report.md",
+            output_file=report_filepath,
         )
 
     @crew
@@ -80,6 +83,6 @@ class TmSlackReporter:
                 "provider": "ollama",
                 "config": {"model": config.get("CREWAI_OLLAMA_EMBEDDER_MODEL_ID")},
             },
-            max_rpm=5,
+            max_rpm=2,
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )
