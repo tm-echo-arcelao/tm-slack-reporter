@@ -5,12 +5,17 @@ from src.tm_slack_reporter.utils.env import config
 
 class SlackToolSet:
     def __init__(self):
-        self.slack_toolset = ComposioToolSet(api_key=config.get("COMPOSIO_API_KEY"))
-        self.entity_id = self._init_auth()
+        self.slack_toolset = ComposioToolSet(
+            api_key=config.get("COMPOSIO_API_KEY"),
+            entity_id=config.get("COMPOSIO_SLACK_USER_ID"),
+        )
+
+        self._init_auth()
+
         self.actions = [
-            Action.SLACK_CONVERSATIONS_HISTORY,
-            Action.SLACK_CONVERSATIONS_LIST,
-            Action.SLACK_USERS_LIST,
+            Action.SLACK_FETCH_CONVERSATION_HISTORY,
+            Action.SLACK_LIST_ALL_SLACK_TEAM_CHANNELS_WITH_VARIOUS_FILTERS,
+            Action.SLACK_LIST_ALL_SLACK_TEAM_USERS_WITH_PAGINATION,
         ]
 
     def _init_auth(self):
@@ -22,13 +27,15 @@ class SlackToolSet:
         entity = self.slack_toolset.get_entity(id=user_id)
 
         try:
-            active_connection = entity.get_connection(App.SLACK)
-
-            if active_connection:
+            try:
+                entity.get_connection(App.SLACK)
                 print(
-                    "Slack connection is already active. Proceeding with tool initialization..."
+                    "Existing Slack connection found. Proceeding with tool initialization..."
                 )
-                return active_connection.entityId
+                return
+            except Exception:
+                print("No Slack connection found. Initiating new connection...")
+                pass
 
             connection_request = self.slack_toolset.initiate_connection(
                 integration_id=integration_id,
@@ -46,17 +53,15 @@ class SlackToolSet:
 
             print("Waiting for Slack connection to be active...")
 
-            active_connection = connection_request.wait_until_active(
+            connection_request.wait_until_active(
                 client=self.slack_toolset.client, timeout=300
             )
 
             print("Slack connection is active. Proceeding with tool initialization...")
-            return active_connection.entityId
+            return
 
         except Exception as e:
             raise Exception(f"Error initiating Slack connection: {e}")
 
     def get_tools(self):
-        return self.slack_toolset.get_tools(
-            actions=self.actions, entity_id=self.entity_id
-        )
+        return self.slack_toolset.get_tools(actions=self.actions)

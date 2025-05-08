@@ -1,7 +1,14 @@
 gather_context_task:
   description: >
-    Gather the list of messages in the Slack channel {slack_channel_name} during the time period {time_period}. 
-    Make sure to include all the messages, not just the ones that are relevant to the report.
+    First, use the SLACK_LIST_ALL_SLACK_TEAM_CHANNELS_WITH_VARIOUS_FILTERS tool to get the list of channels.
+    Use this tool to find the channel ID for the channel {slack_channel_name}.
+    
+    Then, use the SLACK_LIST_ALL_SLACK_TEAM_USERS_WITH_PAGINATION tool to get the list of users.
+    Use this tool to find the user ID for the user {slack_user_name}.
+
+    Last, use the SLACK_FETCH_CONVERSATION_HISTORY tool to get the list of messages in the channel.
+    Enter the channel ID you found in the previous step and specify the time period {time_period}.
+    Look for the messages made by the user ID you found in the previous step and summarize their actions.
   expected_output: >
     A bullet list of all actions taken by the user {slack_user_name} in the Slack 
     channel {slack_channel_name} during the time period {time_period}. Each action should describe
@@ -17,4 +24,4 @@ report_task:
     during the time period {time_period}. The report should detail the user's role, main responsibilities,
     and strengths, weaknesses, and areas for improvement. An individual report should be written for each
     Slack channel.
-  agent: slack_summarizer, action_reporter
+  agent: action_reporter

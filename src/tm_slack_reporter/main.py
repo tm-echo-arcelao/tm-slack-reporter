@@ -19,7 +19,7 @@ def run():
     Run the crew.
     """
     inputs = {
-        "slack_channel_name": "#engineering-office-genai",
+        "slack_channel_name": "#tm-slack-reporter-test",
         "time_period": "last 30 days",
         "slack_user_name": "echo",
     }
@@ -34,7 +34,11 @@ def train():
     """
     Train the crew for a given number of iterations.
     """
-    inputs = {"topic": "AI LLMs", "current_year": str(datetime.now().year)}
+    inputs = {
+        "slack_channel_name": "#tm-slack-reporter-test",
+        "time_period": "last 30 days",
+        "slack_user_name": "echo",
+    }
     try:
         TmSlackReporter().crew().train(
             n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs
@@ -59,7 +63,11 @@ def test():
     """
     Test the crew execution and returns the results.
     """
-    inputs = {"topic": "AI LLMs", "current_year": str(datetime.now().year)}
+    inputs = {
+        "slack_channel_name": "#tm-slack-reporter-test",
+        "time_period": "last 30 days",
+        "slack_user_name": "echo",
+    }
 
     try:
         TmSlackReporter().crew().test(
