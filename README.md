@@ -9,22 +9,25 @@ The TmSlackReporter crew consists of two AI agents:
 1.  **Slack Channel Summarizer (`slack_summarizer`):** This agent connects to your Slack workspace, gathers messages from a specified channel within a given time period, and identifies actions taken by a particular user.
 2.  **User Performance Reporter (`action_reporter`):** This agent takes the list of actions and generates a performance report, detailing the user's contributions, potential strengths, weaknesses, and areas for improvement.
 
-The primary output is a `report.md` file containing this performance analysis. The crew is configured by default to use local Ollama models for its AI capabilities.
+The primary output is a `report.md` file containing this performance analysis. The crew is configured to use models via [OpenRouter](https://openrouter.ai/) for its main AI capabilities and local Ollama models for embeddings.
 
 ## Installation
 
 Ensure you have Python >=3.10 and <3.13 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management.
 
-1.  **Install Ollama:**
-    This project uses local Ollama models by default. Download and install Ollama from [ollama.com](https://ollama.com). After installation, ensure the Ollama application is running. You'll also need to pull the models specified in your `.env` file (e.g., `ollama pull llama3`).
+1.  **Install Ollama (for Embeddings):**
+    This project uses local Ollama models for generating embeddings. Download and install Ollama from [ollama.com](https://ollama.com). After installation, ensure the Ollama application is running. You'll also need to pull the embedding model specified in your `.env` file (e.g., `ollama pull nomic-embed-text`).
 
-2.  **Install UV:**
+2.  **Set up OpenRouter (for Main LLM):**
+    The main AI agents in this project use models via OpenRouter. You will need an OpenRouter API key.
+
+3.  **Install UV:**
     If you don't have UV installed, get it by running:
     ```bash
     pip install uv
     ```
 
-3.  **Install Project Dependencies:**
+4.  **Install Project Dependencies:**
     Navigate to your project directory and install the dependencies. You can use the crewAI CLI:
     ```bash
     crewai install
@@ -38,16 +41,20 @@ Ensure you have Python >=3.10 and <3.13 installed on your system. This project u
 
 1.  **Environment Variables (`.env` file):**
     Create a `.env` file in the root of your project. This file will store necessary configurations.
-    Based on `src/tm_slack_reporter/crew.py` and `src/tm_slack_reporter/utils/env.py`, you'll need to define:
-    *   `OLLAMA_MODEL_ID`: The Ollama model to be used by the agents (e.g., `llama3`).
-    *   `OLLAMA_EMBEDDER_MODEL_ID`: The Ollama model to be used for embeddings.
+    You'll need to define:
+    *   `CREWAI_OPENROUTER_MODEL_ID`: The OpenRouter model to be used by the agents (e.g., `openrouter/google/gemini-flash-1.5`).
+    *   `CREWAI_OPENROUTER_BASE_URL`: The base URL for the OpenRouter API (usually `https://openrouter.ai/api/v1`).
+    *   `OPENROUTER_API_KEY`: Your API key for OpenRouter.
+    *   `CREWAI_OLLAMA_EMBEDDER_MODEL_ID`: The Ollama model to be used for embeddings (e.g., `nomic-embed-text`).
 
     The Slack tools used by the `slack_summarizer` agent (via `SlackToolSet`) might require additional environment variables, such as API keys for Slack or a service like Composio if it's used to manage tool integrations. Please check the documentation for `SlackToolSet` or any underlying libraries (like Composio) for specific requirements.
 
     Example `.env` content:
     ```env
-    OLLAMA_MODEL_ID="your-ollama-chat-model"
-    OLLAMA_EMBEDDER_MODEL_ID="your-ollama-embedding-model"
+    CREWAI_OPENROUTER_MODEL_ID="openrouter/google/gemini-flash-1.5"
+    CREWAI_OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
+    OPENROUTER_API_KEY="sk-or-your-openrouter-api-key"
+    CREWAI_OLLAMA_EMBEDDER_MODEL_ID="nomic-embed-text"
     # Add other necessary keys like SLACK_API_TOKEN or COMPOSIO_API_KEY if required by SlackToolSet
     ```
 
@@ -113,7 +120,7 @@ The TmSlackReporter Crew is composed of:
 *   **Tasks (`src/tm_slack_reporter/config/tasks.yaml`):**
     *   `gather_context_task`: Assigned to the `slack_summarizer` to collect data.
     *   `report_task`: Assigned to the `action_reporter` to produce the final report.
-*   **Crew Logic (`src/tm_slack_reporter/crew.py`):** Defines how agents and tasks are orchestrated, including the LLM configuration (defaulting to Ollama) and sequential processing.
+*   **Crew Logic (`src/tm_slack_reporter/crew.py`):** Defines how agents and tasks are orchestrated, including the LLM configuration (using OpenRouter for main tasks and Ollama for embeddings) and sequential processing.
 *   **Tools (`src/tm_slack_reporter/tools/`):** Contains tools like `SlackToolSet` used by agents to interact with external services.
 
 ## Customizing Your Crew
